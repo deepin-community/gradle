@@ -1,14 +1,43 @@
-Description: Adds the --illegal-access=permit option to run Gradle on Java 17
+Description: Adds the --add-opens option to run Gradle on Java 17
 Author: Emmanuel Bourg <ebourg@apache.org>
 Forwarded: not-needed
 --- a/subprojects/plugins/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
 +++ b/subprojects/plugins/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
-@@ -162,7 +162,7 @@
+@@ -162,6 +162,10 @@
  APP_ARGS=\$(save "\$@")
  
  # Collect all arguments for the java command, following the shell quoting and substitution rules
--eval set -- \$DEFAULT_JVM_OPTS \$JAVA_OPTS \$${optsEnvironmentVar} <% if ( appNameSystemProperty ) { %>"\"-D${appNameSystemProperty}=\$APP_BASE_NAME\"" <% } %>-classpath "\"\$CLASSPATH\"" ${mainClassName} "\$APP_ARGS"
-+eval set -- \$DEFAULT_JVM_OPTS --illegal-access=permit \$JAVA_OPTS \$${optsEnvironmentVar} <% if ( appNameSystemProperty ) { %>"\"-D${appNameSystemProperty}=\$APP_BASE_NAME\"" <% } %>-classpath "\"\$CLASSPATH\"" ${mainClassName} "\$APP_ARGS"
++if \$JAVACMD --add-opens java.base/java.lang=ALL-UNNAMED -version ; then
++    DEFAULT_JVM_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED \$DEFAULT_JVM_OPTS"
++fi
++
+ eval set -- \$DEFAULT_JVM_OPTS \$JAVA_OPTS \$${optsEnvironmentVar} <% if ( appNameSystemProperty ) { %>"\"-D${appNameSystemProperty}=\$APP_BASE_NAME\"" <% } %>-classpath "\"\$CLASSPATH\"" ${mainClassName} "\$APP_ARGS"
  
  # by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
- if [ "\$(uname)" = "Darwin" ] && [ "\$HOME" = "\$PWD" ]; then
+--- a/subprojects/launcher/src/main/java/org/gradle/launcher/daemon/client/DefaultDaemonStarter.java
++++ b/subprojects/launcher/src/main/java/org/gradle/launcher/daemon/client/DefaultDaemonStarter.java
+@@ -91,10 +91,24 @@
+ 
+         versionValidator.validate(daemonParameters);
+ 
++        // check the version of the JDK
++        boolean jpms;
++        try {
++            Process process = new ProcessBuilder(daemonParameters.getEffectiveJvm().getJavaExecutable().getAbsolutePath(),
++                                                 "--add-opens", "java.base/java.lang=ALL-UNNAMED", "-version").start();
++            jpms = process.waitFor() == 0;
++        } catch (Exception e) {
++            jpms = false;
++        }
++
+         List<String> daemonArgs = new ArrayList<String>();
+         daemonArgs.add(daemonParameters.getEffectiveJvm().getJavaExecutable().getAbsolutePath());
+ 
+         List<String> daemonOpts = daemonParameters.getEffectiveJvmArgs();
++        if (jpms) {
++            daemonArgs.add("--add-opens");
++            daemonArgs.add("java.base/java.lang=ALL-UNNAMED");
++        }
+         daemonArgs.addAll(daemonOpts);
+         daemonArgs.add("-cp");
+         daemonArgs.add(CollectionUtils.join(File.pathSeparator, classpath.getAsFiles()));

@@ -1,0 +1,45 @@
+Description: Fixes the type inference errors when building with the source/target level set to Java 8
+Author: Emmanuel Bourg <ebourg@apache.org>
+Forwarded: not-needed
+--- a/subprojects/base-services/src/main/java/org/gradle/internal/Actions.java
++++ b/subprojects/base-services/src/main/java/org/gradle/internal/Actions.java
+@@ -64,7 +64,7 @@
+      * @return The composite action.
+      */
+     public static <T> Action<T> composite(Action<? super T>... actions) {
+-        return composite(Arrays.asList(actions));
++        return composite((java.util.List) Arrays.asList(actions));
+     }
+ 
+     private static class CompositeAction<T> implements Action<T> {
+--- a/subprojects/base-services-groovy/src/main/java/org/gradle/api/specs/Specs.java
++++ b/subprojects/base-services-groovy/src/main/java/org/gradle/api/specs/Specs.java
+@@ -63,7 +63,7 @@
+         if (specs.length == 1) {
+             return Cast.uncheckedCast(specs[0]);
+         }
+-        return doIntersect(Arrays.asList(specs));
++        return doIntersect((List) Arrays.asList(specs));
+     }
+ 
+     /**
+@@ -105,7 +105,7 @@
+         if (specs.length == 1) {
+             return Cast.uncheckedCast(specs[0]);
+         }
+-        return doUnion(Arrays.asList(specs));
++        return doUnion((List) Arrays.asList(specs));
+     }
+ 
+     /**
+--- a/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/DefaultGlobalDependencyResolutionRules.java
++++ b/subprojects/dependency-management/src/main/java/org/gradle/api/internal/artifacts/DefaultGlobalDependencyResolutionRules.java
+@@ -60,7 +60,7 @@
+ 
+         @Override
+         public Action<DependencySubstitution> getRuleAction() {
+-            return Actions.composite(CollectionUtils.collect(ruleProviders, new Transformer<Action<? super DependencySubstitution>, DependencySubstitutionRules>() {
++            return Actions.composite((java.util.Collection) CollectionUtils.collect(ruleProviders, new Transformer<Action<? super DependencySubstitution>, DependencySubstitutionRules>() {
+                 @Override
+                 public Action<? super DependencySubstitution> transform(DependencySubstitutionRules rule) {
+                     return rule.getRuleAction();

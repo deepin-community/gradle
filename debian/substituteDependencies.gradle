@@ -33,6 +33,7 @@ configurations.all {
         case 'jcifs': details.useTarget('jcifs:jcifs:debian'); return;
         case 'junit': details.useVersion('4.x'); return;
         case 'wagon-http-shared4': details.useTarget('org.apache.maven.wagon:wagon-http-shared4:debian'); return;
+        case 'jansi': details.useVersion('1.x'); return;
         default:
           if (!details.requested.version.endsWith('.x')) {
             details.useVersion('debian');

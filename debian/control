@@ -1,6 +1,5 @@
 Source: gradle
 Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
-Uploaders: Kai-Chung Yan <seamlikok@gmail.com>
 Section: java
 Priority: optional
 Build-Depends: ant,
@@ -36,7 +35,7 @@ Build-Depends: ant,
                libguice-java,
                libhttpclient-java,
                libhttpcore-java,
-               libjansi-java,
+               libjansi1-java,
                libjarjar-java,
                libjatl-java,
                libjaxen-java,
@@ -68,7 +67,7 @@ Build-Depends: ant,
                libxerces2-java,
                maven-repo-helper,
                testng
-Standards-Version: 4.5.1
+Standards-Version: 4.6.2
 Vcs-Git: https://salsa.debian.org/java-team/gradle.git
 Vcs-Browser: https://salsa.debian.org/java-team/gradle
 Homepage: https://gradle.org
@@ -106,7 +105,7 @@ Depends: ant,
          libguava-java (>= 23.0),
          libhttpclient-java,
          libhttpcore-java,
-         libjansi-java,
+         libjansi1-java,
          libjarjar-java,
          libjcip-annotations-java,
          libjna-java,

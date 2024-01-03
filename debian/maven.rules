@@ -12,3 +12,4 @@ antlr               antlr               * s/2\..*/2.x/
 commons-collections commons-collections * s/3\..*/3.x/
 junit               junit               * s/4\..*/4.x/
 org.apache.maven    maven-*             * s/3\..*/3.x/
+org.fusesource.jansi jansi * s/1\..*/1.x/

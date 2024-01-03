@@ -1,3 +1,68 @@
+gradle (4.4.1-20) unstable; urgency=medium
+
+  * Team upload.
+  * Fixed the type inference errors when building with source/target level 8
+    (Closes: #1052758)
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Wed, 27 Sep 2023 08:04:43 +0200
+
+gradle (4.4.1-19) unstable; urgency=medium
+
+  * Team upload.
+  * Raise automatically the javac source/target level to at least 8
+    to build Gradle based packages with OpenJDK 21 (Closes: #1052482)
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Mon, 25 Sep 2023 07:58:25 +0200
+
+gradle (4.4.1-18) unstable; urgency=medium
+
+  * Team upload.
+  * Fixed CVE-2019-16370: No longer use SHA-1 for PGP signing (Closes: #941186)
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Sun, 22 Jan 2023 01:05:45 +0100
+
+gradle (4.4.1-17) unstable; urgency=medium
+
+  * Team upload.
+  * No longer use the --illegal-access=permit option (Closes: #1023553)
+  * Use the --add-opens option only if the JVM supports it (Closes: #1020975)
+  * Do not attempt to run the tests (triggered by debhelper 13)
+  * Standards-Version updated to 4.6.2
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Sat, 21 Jan 2023 14:26:10 +0100
+
+gradle (4.4.1-16) unstable; urgency=medium
+
+  * Team upload.
+  * Update normalize-classpath.patch and add jansi1.jar to the CLASSPATH.
+    Thanks to Fab Stz for the report. (Closes: #1020952)
+
+ -- Markus Koschany <apo@debian.org>  Thu, 29 Sep 2022 23:26:57 +0200
+
+gradle (4.4.1-15) unstable; urgency=medium
+
+  [ 殷啟聰 | Kai-Chung Yan ]
+  * Team upload.
+  * Remove myself from Uploaders
+
+  [ Markus Koschany ]
+  * Depend on libjansi1-java instead of libjansi-java.
+    (Closes: #1012214, #1013545)
+  * maven.rules: use only libjansi1-java.
+  * substituteDependencies.gradle: Fix substitution rule for jansi1.
+  * Declare compliance with Debian Policy 4.6.1.
+
+ -- Markus Koschany <apo@debian.org>  Sun, 21 Aug 2022 15:26:04 +0200
+
+gradle (4.4.1-14) unstable; urgency=medium
+
+  * Team upload.
+  * Raise automatically the javac source/target level to at least 7
+    to build Gradle based packages with OpenJDK 17 (Closes: #894290)
+  * Set --add-opens java.base/java.lang=ALL-UNNAMED when launching Gradle (Closes: #1011621)
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Tue, 31 May 2022 15:42:58 +0200
+
 gradle (4.4.1-13) unstable; urgency=medium
 
   * Team upload.

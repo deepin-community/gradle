@@ -38,3 +38,6 @@ backport-capabilities.patch
 source-level.patch
 permit-illegal-access.patch
 java17-compatibility.patch
+auto-adjust-language-level.patch
+CVE-2019-16370.patch
+type-inference-fix.patch

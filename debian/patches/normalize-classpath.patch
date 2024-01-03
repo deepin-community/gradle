@@ -1,17 +1,24 @@
-From: Markus Koschany <apo@debian.org>
-From: Kai-Chung Yan
-Subject: Normalize the generated classpath in every JAR
- Gradle uses its own class loading mechanism which uses a dedicated classpath
- file stored in every JAR. The JAR names are really names, not paths, so they
- need to be normalized so that Gradle can search `/usr/share/java` for them.
- .
- This patch also sorts the generated classpath to improve reproducibility.
- .
- One bug of this patch is that the Groovy version is hard-coded, but it seems
- not to affect the actual result of running `gradle --version`.
+From: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Date: Thu, 29 Sep 2022 23:22:31 +0200
+Subject: Normalize the generated classpath in every JAR Gradle uses its own
+ class loading mechanism which uses a dedicated classpath file stored in
+ every JAR. The JAR names are really names, not paths,
+ so they need to be normalized so that Gradle can search `/usr/share/java`
+ for them. . This patch also sorts the generated classpath to improve
+ reproducibility. . One bug of this patch is that the Groovy version is
+ hard-coded,
+ but it seems not to affect the actual result of running `gradle --version`.
+
+---
+ .../org/gradle/build/ClasspathManifest.groovy      | 45 +++++++++++++++++++++-
+ .../gradle/api/internal/plugins/GroovyJarFile.java |  4 +-
+ 2 files changed, 45 insertions(+), 4 deletions(-)
+
+diff --git a/buildSrc/src/main/groovy/org/gradle/build/ClasspathManifest.groovy b/buildSrc/src/main/groovy/org/gradle/build/ClasspathManifest.groovy
+index b500e84..11f223c 100644
 --- a/buildSrc/src/main/groovy/org/gradle/build/ClasspathManifest.groovy
 +++ b/buildSrc/src/main/groovy/org/gradle/build/ClasspathManifest.groovy
-@@ -49,14 +49,14 @@
+@@ -49,14 +49,14 @@ class ClasspathManifest extends DefaultTask {
      String getRuntime() {
          return input.fileCollection {
              (it instanceof ExternalDependency) || (it instanceof FileCollectionDependency)
@@ -28,7 +35,7 @@ Subject: Normalize the generated classpath in every JAR
      }
  
      Properties createProperties() {
-@@ -73,4 +73,42 @@
+@@ -73,4 +73,45 @@ class ClasspathManifest extends DefaultTask {
      def generate() {
          ReproduciblePropertiesWriter.store(createProperties(), manifestFile)
      }
@@ -58,6 +65,9 @@ Subject: Normalize the generated classpath in every JAR
 +        if (name.startsWith('javax.inject-')) {
 +            return 'atinject-jsr330-api.jar'
 +        }
++        if (name.startsWith('jansi-')) {
++            return 'jansi1.jar'
++        }
 +        if (name.startsWith('geronimo-interceptor_3.0_spec-')) {
 +            return 'geronimo-interceptor-3.0-spec.jar'
 +        }
@@ -71,9 +81,11 @@ Subject: Normalize the generated classpath in every JAR
 +        return name.replaceAll('-[\\d\\.]*x\\.jar\\z', '.jar')
 +    }
  }
+diff --git a/subprojects/plugins/src/main/java/org/gradle/api/internal/plugins/GroovyJarFile.java b/subprojects/plugins/src/main/java/org/gradle/api/internal/plugins/GroovyJarFile.java
+index 5b73299..e3799bc 100644
 --- a/subprojects/plugins/src/main/java/org/gradle/api/internal/plugins/GroovyJarFile.java
 +++ b/subprojects/plugins/src/main/java/org/gradle/api/internal/plugins/GroovyJarFile.java
-@@ -23,7 +23,7 @@
+@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
  import java.util.regex.Pattern;
  
  public class GroovyJarFile {
@@ -82,7 +94,7 @@ Subject: Normalize the generated classpath in every JAR
  
      private final File file;
      private final Matcher matcher;
-@@ -42,7 +42,7 @@
+@@ -42,7 +42,7 @@ public class GroovyJarFile {
      }
  
      public VersionNumber getVersion() {
